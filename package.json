@@ -1,0 +1,19 @@
+{
+  "name": "@wormss/github",
+  "version": "1.0.0",
+  "description": "Simple Github API",
+  "main": "app/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/WORMSS/node-github"
+  },
+  "author": "wormss <wormssmail@gmail.com> (http://wormss.github.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WORMSS/node-github/issues"
+  },
+  "homepage": "https://github.com/WORMSS/node-github"
+}
