@@ -4,6 +4,7 @@
  */
 
 var https = require("https"),
+	util = require("util"),
 	EventEmitter = require("events").EventEmitter,
 	headerLinkReg = /<(.+?)>; rel="(.+?)"/g;
 
@@ -12,8 +13,16 @@ function GitHubAPI(initData) {
 }
 
 function init(initData) {
-	this._token = initData.token || undefined;
-	this._debug = initData.debug || false;
+	if ( util.isString(initData.token) || util.isUndefined(initData.token) ) {
+		this._token = initData.token;
+	} else {
+		throw Error("token must be String or undefined");
+	}
+	if ( util.isUndefined(initData.debug) || util.isBoolean(initData.debug) ) {
+		this._debug = initData.debug;
+	} else {
+		throw Error("debug must be Boolean or undefined");
+	}
 }
 
 function getOptions(method, path) {
@@ -98,6 +107,10 @@ GitHubAPI.prototype.getAll = function (path, cb) {
 		}
 	}
 	return emitter;
+};
+
+GitHubAPI.init = function (initData) {
+	return new GitHubAPI(initData);
 };
 
 module.exports = GitHubAPI;
