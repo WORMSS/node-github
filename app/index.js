@@ -60,13 +60,13 @@ function processHeaderLink(link) {
 	return linkObj;
 }
 
-GitHubAPI.prototype.get = function (path, cb) {
+GitHubAPI.prototype.get = function (path) {
 	var httpsOptions = getOptions.call(this, "get", path),
 		emitter = new EventEmitter();
 	
 	setImmediate(function () {
 		if ( this._debug ) {
-			console.log("url:", require('url').format(httpsOptions.path));
+			console.log("url:", require("url").format(httpsOptions.path));
 		}
 		https.request(httpsOptions, function (res) {
 			var data = "";
@@ -83,7 +83,7 @@ GitHubAPI.prototype.get = function (path, cb) {
 	return emitter;
 };
 
-GitHubAPI.prototype.getAll = function (path, cb) {
+GitHubAPI.prototype.getAll = function (path) {
 	var arrRes = [], arrData = [], api = this,
 		emitter = new EventEmitter();
 		
@@ -106,6 +106,33 @@ GitHubAPI.prototype.getAll = function (path, cb) {
 			emitter.removeAllListeners();
 		}
 	}
+	return emitter;
+};
+
+GitHubAPI.prototype.post = function (path, data) {
+	var httpsOptions = getOptions.call(this, "post", path),
+		emitter = new EventEmitter();
+	
+	if ( util.isObject(data) ) {
+		data = JSON.stringify(data);
+	}
+	
+	setImmediate(function () {
+		if ( this._debug ) {
+			console.log("url:", require("url").format(httpsOptions.path), "data:", data);
+		}
+		https.request(httpsOptions, function (res) {
+			var data = "";
+			res.on("data", function (chunk) {
+				data += chunk;
+			}).on("end", function () {
+				res.data = JSON.parse(data);
+				res.headers = processHeaders(res.headers);
+				emitter.emit("end", res);
+				emitter.removeAllListeners();
+			});
+		}).write(data).end();
+	});
 	return emitter;
 };
 
